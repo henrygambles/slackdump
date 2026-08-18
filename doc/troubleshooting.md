@@ -138,8 +138,12 @@ correct, or channel listing fails with `enterprise_is_restricted`.
   restrictions. There is no client-side workaround.
 - **Token expired or revoked.** Slack session tokens expire when you log out or
   a new device signs in.
-- **Slackdump fails to detect enterprise workspace.** You can force enterprise
-  API implementation by running with `-enterprise` flag.
+- **Slackdump fails to detect enterprise workspace.** Slackdump auto-detects
+  Enterprise Grid workspaces from the workspace URL (`*.enterprise.slack.com`)
+  at login time, and from the API's `EnterpriseID` afterwards — there's no
+  manual flag anymore. If detection still fails, re-run
+  `slackdump workspace new <full URL>` using the exact
+  `*.enterprise.slack.com` URL rather than a bare workspace name.
 
 **Fix:** Try the "Sign In on Mobile" method from [Manual Authentication](login-manual.md)
 to obtain a fresh `xoxc-`/`d=` pair. If `enterprise_is_restricted` persists,

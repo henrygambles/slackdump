@@ -38,7 +38,6 @@ func TestSetBaseFlags(t *testing.T) {
 			"-trace", "trace.log",
 			"-log", "log.txt",
 			"-v",
-			"-enterprise",
 			"-files=false",
 			"-api-config", "config.json",
 			"-o", "output.zip",
@@ -63,9 +62,6 @@ func TestSetBaseFlags(t *testing.T) {
 		}
 		if !Verbose {
 			t.Error("Expected Verbose to be true, got false")
-		}
-		if !ForceEnterprise {
-			t.Error("Expected ForceEnterprise to be true, got false")
 		}
 		if WithFiles {
 			t.Error("Expected DownloadFiles to be false, got true")

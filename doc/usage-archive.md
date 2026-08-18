@@ -142,7 +142,6 @@ location. User avatars are not downloaded by default; enable with `-avatars`.
 | `-channel-users | false | Fetch only users seen in the conversations |
 | `-time-from` | (oldest) | Start of date range (UTC) |
 | `-time-to` | now | End of date range (UTC) |
-| `-enterprise` | `false` | Enable Enterprise Grid mode |
 | `-v` | `false` | Verbose output |
 | `-y` | `false` | Answer yes to all prompts (non-interactive) |
 | `-limiter-boost` | (default) | Rate-limiter aggressiveness; try `0` on large workspaces |
