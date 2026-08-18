@@ -118,6 +118,11 @@ type LoginOpts struct {
 	Workspace   string
 	Type        LoginType
 	BrowserPath string
+	// Enterprise is true when Workspace was given as (or resolves to) a
+	// Slack Enterprise Grid URL (*.enterprise.slack.com), so the login
+	// flow knows to route through the enterprise login domain instead of
+	// the plain *.slack.com one.
+	Enterprise bool
 }
 
 var keymap = huh.NewDefaultKeyMap()
@@ -184,6 +189,9 @@ func (*Huh) RequestLoginType(ctx context.Context, _ io.Writer, workspace string)
 	if err := form.RunWithContext(ctx); err != nil {
 		return ret, err
 	}
+	// Detect Enterprise Grid before ExtractWorkspace strips the
+	// ".enterprise" part down to the bare workspace name below.
+	ret.Enterprise = structures.IsEnterpriseWorkspace(ret.Workspace)
 	var err error
 	ret.Workspace, err = structures.ExtractWorkspace(ret.Workspace)
 	if err != nil {

@@ -87,12 +87,6 @@ func globalConfig() Configuration {
 					Updater:     updaters.NewBool(&cfg.WithFiles),
 				},
 				{
-					Name:        "Enterprise mode",
-					Value:       Checkbox(cfg.ForceEnterprise),
-					Description: "Force enterprise mode",
-					Updater:     updaters.NewBool(&cfg.ForceEnterprise),
-				},
-				{
 					Name:        "API limits file",
 					Value:       cfg.ConfigFile,
 					Description: "API limits file",

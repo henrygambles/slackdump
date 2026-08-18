@@ -50,9 +50,8 @@ var (
 
 	Limits = network.DefLimits
 
-	ForceEnterprise bool
-	MachineIDOvr    string // Machine ID override
-	NoEncryption    bool   // disable encryption
+	MachineIDOvr string // Machine ID override
+	NoEncryption bool   // disable encryption
 
 	MemberOnly          bool
 	OnlyChannelUsers    bool
@@ -234,7 +233,10 @@ func SetBaseFlags(fs *flag.FlagSet, mask FlagMask) {
 	fs.BoolVar(&Verbose, "v", osenv.Value("DEBUG", false), "verbose messages")
 
 	if mask&OmitAuthFlags == 0 {
-		fs.BoolVar(&ForceEnterprise, "enterprise", false, "enable Enterprise module, you need to specify this option if you're using Slack Enterprise Grid")
+		// Enterprise Grid workspaces no longer need a manual flag: it's
+		// detected automatically, both from *.enterprise.slack.com URLs
+		// at login time and from the workspace's EnterpriseID at API-call
+		// time (see structures.IsEnterpriseWorkspace and internal/client).
 		fs.BoolVar(&LoadSecrets, "load-env", false, "load secrets from the environment, .env, .env.txt or secrets.txt file")
 	}
 	if mask&OmitAuthFlags == 0 || mask&OmitCacheDir == 0 {

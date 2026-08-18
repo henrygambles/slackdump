@@ -81,6 +81,9 @@ func NewPlaywrightAuth(ctx context.Context, opts ...Option) (PlaywrightAuth, err
 		}
 		defer br.opts.flow.Stop()
 	}
+	// Detect Enterprise Grid before ExtractWorkspace strips the
+	// ".enterprise" part down to the bare workspace name below.
+	isEnterprise := structures.IsEnterpriseWorkspace(br.opts.workspace)
 	if wsp, err := structures.ExtractWorkspace(br.opts.workspace); err != nil {
 		return br, err
 	} else {
@@ -90,7 +93,14 @@ func NewPlaywrightAuth(ctx context.Context, opts ...Option) (PlaywrightAuth, err
 	slog.Info("If you're running it for the first time, it will take a couple of minutes...")
 	stopSpinner := pleaseWait(ctx, "Initialising Playwright...")
 	defer stopSpinner()
-	auther, err := browser.New(br.opts.workspace, browser.OptBrowser(br.opts.browser), browser.OptTimeout(br.opts.loginTimeout), browser.OptVerbose(br.opts.verbose))
+	// browser.New builds the login URL as "https://<workspace>.slack.com".
+	// For Enterprise Grid workspaces, appending ".enterprise" to the
+	// workspace name produces "<name>.enterprise.slack.com" instead.
+	loginWorkspace := br.opts.workspace
+	if isEnterprise {
+		loginWorkspace += ".enterprise"
+	}
+	auther, err := browser.New(loginWorkspace, browser.OptBrowser(br.opts.browser), browser.OptTimeout(br.opts.loginTimeout), browser.OptVerbose(br.opts.verbose))
 	if err != nil {
 		return br, err
 	}

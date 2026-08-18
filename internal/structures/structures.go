@@ -79,6 +79,32 @@ func ExtractWorkspace(workspace string) (string, error) {
 	}
 }
 
+// IsEnterpriseWorkspace reports whether workspace (a workspace name or a
+// full URL, same input accepted by [ExtractWorkspace]) refers to a Slack
+// Enterprise Grid workspace, i.e. it was expressed via the
+// *.enterprise.slack.com domain (as opposed to a plain *.slack.com team
+// domain).  Unlike ExtractWorkspace, this does not error on plain names —
+// it simply returns false for anything that isn't an enterprise URL/host.
+//
+// This exists because ExtractWorkspace reduces
+// "kingdomofgodsandbox.enterprise.slack.com" down to the bare workspace
+// name "kingdomofgodsandbox", discarding the fact that it's an Enterprise
+// Grid workspace. Callers that need to build a login URL (which must go
+// through the .enterprise.slack.com domain) should check this before
+// calling ExtractWorkspace, or on the original input.
+func IsEnterpriseWorkspace(workspace string) bool {
+	host := workspace
+	if strings.HasPrefix(host, "https://") {
+		uri, err := url.Parse(host)
+		if err != nil {
+			return false
+		}
+		host = uri.Host
+	}
+	parts := strings.Split(host, ".")
+	return len(parts) == 4 && parts[1] == "enterprise" && parts[2] == "slack" && parts[3] == "com"
+}
+
 // NVLTime returns the default time if the given time is zero.
 func NVLTime(t time.Time, def time.Time) time.Time {
 	if t.IsZero() {

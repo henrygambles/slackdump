@@ -147,8 +147,17 @@ func NewRODAuth(ctx context.Context, opts ...Option) (RodAuth, error) {
 		}
 	}
 
+	// slackauth.New builds the login URL as "https://<workspace>.slack.com".
+	// For Enterprise Grid workspaces that must go through
+	// enterprise.slack.com, we can't edit that (it's an external module),
+	// but appending ".enterprise" to the workspace name it's given
+	// produces the exact same effect: "<name>.enterprise.slack.com".
+	loginWorkspace := resp.Workspace
+	if resp.Enterprise {
+		loginWorkspace += ".enterprise"
+	}
 	cl, err := slackauth.New(
-		resp.Workspace,
+		loginWorkspace,
 		sopts...,
 	)
 	if err != nil {

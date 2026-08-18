@@ -130,6 +130,29 @@ func TestExtractWorkspace(t *testing.T) {
 	}
 }
 
+func TestIsEnterpriseWorkspace(t *testing.T) {
+	tests := []struct {
+		name      string
+		workspace string
+		want      bool
+	}{
+		{"bare name", "blahblah", false},
+		{"plain workspace URL", "https://blahblah.slack.com/", false},
+		{"plain workspace URL no slash", "https://blahblah.slack.com", false},
+		{"enterprise URL", "https://acme-co.enterprise.slack.com/archives/C0BMUDC13MF", true},
+		{"enterprise URL no path", "https://acme-co.enterprise.slack.com", true},
+		{"enterprise host without schema", "acme-co.enterprise.slack.com", true},
+		{"not a slack domain", "blahblah.example.com", false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := IsEnterpriseWorkspace(tt.workspace); got != tt.want {
+				t.Errorf("IsEnterpriseWorkspace() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestNVLTime(t *testing.T) {
 	type args struct {
 		t   time.Time

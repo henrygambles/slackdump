@@ -37,7 +37,6 @@ func SlackdumpSession(ctx context.Context, opts ...slackdump.Option) (*slackdump
 
 	stdOpts := []slackdump.Option{
 		slackdump.WithLogger(cfg.Log),
-		slackdump.WithForceEnterprise(cfg.ForceEnterprise),
 		slackdump.WithLimits(cfg.Limits),
 	}
 
@@ -56,7 +55,6 @@ func Slack(ctx context.Context, opts ...client.Option) (client.Slack, error) {
 	if err != nil {
 		return nil, fmt.Errorf("authentication error: %w", err)
 	}
-	opts = append(opts, client.WithEnterprise(cfg.ForceEnterprise))
 	client, err := client.New(ctx, prov, opts...)
 	if err != nil {
 		return nil, fmt.Errorf("error creating new client: %w", err)
